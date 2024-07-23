@@ -1,4 +1,5 @@
 import librosa
+print(librosa.__version__)
 import numpy as np
 import matplotlib.pyplot as plt
 import torch
@@ -11,21 +12,9 @@ def add_white_noise(data, noise_factor=0.005):
     return augmented_data
 
 # Time stretching
-def time_stretch(data, rate=1.5):
-    return librosa.effects.time_stretch(data, rate)
-
-# Pitch scaling
-def pitch_shift(data, sampling_rate, pitch_factor=0.7):
-    return librosa.effects.pitch_shift(data, sampling_rate, pitch_factor)
-
-# Polarity inversion
-def polarity_inversion(data):
-    return -data
-
-# Random gain
-def random_gain(data, gain_factor=1.5):
-    return data * gain_factor       
-
+def time_stretch(data, rate=0.8):
+   return librosa.effects.time_stretch(data, rate=rate)
+    
 def plot_waveform(data, sr, title):
     plt.figure(figsize=(10, 4))
     librosa.display.waveshow(data, sr=sr)
@@ -34,18 +23,19 @@ def plot_waveform(data, sr, title):
 
 if __name__ == "__main__":
     signal, sr = librosa.load('/Users/nellygarcia/Downloads/WeConnect_Nkanyezi-Mkhize-R.wav')
-    noiseSignal = add_white_noise(signal)
+    
+    # Apply time-stretching
+    stretchSignal = time_stretch(signal)
     
     # Convert numpy array to 2D tensor (1, N) and ensure it's a float32 tensor
-    noiseSignal_tensor = torch.tensor(noiseSignal, dtype=torch.float32).unsqueeze(0)
+    stretchSignal_tensor = torch.tensor(stretchSignal, dtype=torch.float32).unsqueeze(0)
     
-    # Save noiseSignal.wav using the correct tensor
-    torchaudio.save("noiseSignal.wav", noiseSignal_tensor, sr)
+    # Save stretched signal
+    torchaudio.save("stretchSignal.wav", stretchSignal_tensor, sr)
     
-    plot_waveform(noiseSignal, sr, 'Noise Signal')
-    # Save plot noiseSignal.png
-    plt.savefig("noiseSignal.png")
+    # Plot and save waveforms
+    plot_waveform(stretchSignal, sr, 'Stretched Signal')
+    plt.savefig("stretchSignal.png")
     
     plot_waveform(signal, sr, 'Original Signal')
-    # Save plot OriginalSignal.png
     plt.savefig("OriginalSignal.png")
