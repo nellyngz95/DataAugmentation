@@ -21,6 +21,7 @@ def plot_waveform(data, sr, title):
     plt.show()
 
 if __name__ == "__main__":
+    print("Time Stretching")
     signal, sr = librosa.load('/Users/nellygarcia/Downloads/WeConnect_Nkanyezi-Mkhize-R.wav')
     
     # Apply time-stretching
